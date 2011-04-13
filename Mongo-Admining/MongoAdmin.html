@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta name="description" content="Mongo Admin’ing	 Jesse Wolgamott twitter: @jwo slides: http://github.com/jwo Quick Install Dev: brew install mongodb Server: apt-get install mongodb  http://www.mongodb.org/display/DOCS/Ubuntu+and+Debian+packages Don’t Fear the Command Line Command Line Javascript (mongo) Ruby Driver Mongoid / Mongo Mapper Quick Server Status db db.system.namespaces.find() db.serverStatus() db.currentOp() Command Line Basics use dba db.collection.find({json params}) db.collection.findOne({json params}) db.collection.mapReduce(map,reduce) db.collection.save({json}) Why Bother? Mongo queries enhance Mongoid queries Drop to command line when needed Game.where(:outcome=&gt;{‘$in’=&gt;[‘winning’,‘tie’]}) Game.collection.update({:outcome=&gt;‘winning’, ‘$set’=&gt;{:winning=&gt;true}}) All Admin is Command Line Setup Replica Sets Check on Status Replica / Slave / Journaling “If you aren’t running a replica set, you don’t care about your data”  -- Mongo DB dude Master / Slave What You’d Expect M Slave Slave Slave Writes Go Here Reads CAN Go Here Replica Sets The new Hotness (and Recommended) Primary Arbiter Writes Go Here Secondary Secondary Secondary Nothing Goes Here CAN Read Arbiter? Arbiters exist when even number of hosts They cast votes on primary elections Can exist on your app server Journaling Added in 1.8 mongod -- journal Will write out changes to a journal directory You can restore from journal Replica Set Fun config = {     _id: 'houstonrb',     members: [      {_id: 0, host: 'localhost:20000'},      {_id: 1, host: 'localhost:20001'},      {_id: 2, host: 'localhost:20002', arbiterOnly: true}] }  // Start it up rs.initiate(config);  // Check it Out rs.status()  // Who’s your daddy? rs.isMaster() Non-Master Reads error: { &quot;$err&quot; : &quot;not master&quot;, &quot;code&quot; : 10107 }  OK, so we’ll do:  db.getMongo().setSlaveOk() // Awesome Backup / Restore mongodump --db houstonrb  mongorestore --db houstonrb -c collections --drop --indexesLast DirectoryName  * Have all your .bson files in a directory named your database  The Data Gobbler -- mongodb likes hard-drive space and won’t give it back Use mongod --repair to reclaim your space! Repairing Nightly Plan service mongodb stop &amp;&amp; mongod --repair --dbpath /var/lib/mongodb &amp;&amp; service mongodb start  rm -f /data/mongodump-backup.tar.bz2 &amp;&amp; mongodump -o /data/backups &amp;&amp; tar -jcf /data/mongodump-backup.tar.bz2 /data/backups &amp;&amp; rm -rf /data/backups/ Catch Up! When a Replica Set gets ‘stale’  rs.status will remain “5” (Recovering) On Master, will say “Error RS102 too stale to catch up” stop mongo on all servers, copy over all data files, including local.*, start all Table Scans == Devil When you get to 500,000 records, your DB may slow to crawl. /var/log/mongodb/mongodb.log for logged queries (table scans) db.collection.getIndexKeys()  Mongoid: rake db:mongoid:create_indexes No, Really I’ve been surprised LOTS at how often a table scan happens. Test it out: mongod --notablescan Stuff will break. Don’t Shard Early Helps in map-reduce You define a “shard-key”, like lastname from A-H on this shard Sharding Scaling (Secret Sauce) Many Shard Masters, even more slaves Add Shards for write and data size scaling Add Slaves for read scaling (map-reduce) and redundancy Sharding is Hard Neat Snippets Replication Setup Sharding Setup  https://github.com/mongodb/mongo-snippets EC2 Notes Reformat drive to EXT4 or XFS Don’t use EBS for long term backups Can use EBS for setting up replica sets"/>
+    <title></title>
+    <script type="text/javascript" language="javascript">
+//      <![CDATA[
+            var images = new Array (24);
+            images[0] = "MongoAdmin_files/MongoAdmin.001.png";
+            images[1] = "MongoAdmin_files/MongoAdmin.002.png";
+            images[2] = "MongoAdmin_files/MongoAdmin.003.png";
+            images[3] = "MongoAdmin_files/MongoAdmin.004.png";
+            images[4] = "MongoAdmin_files/MongoAdmin.005.png";
+            images[5] = "MongoAdmin_files/MongoAdmin.006.png";
+            images[6] = "MongoAdmin_files/MongoAdmin.007.png";
+            images[7] = "MongoAdmin_files/MongoAdmin.008.png";
+            images[8] = "MongoAdmin_files/MongoAdmin.009.png";
+            images[9] = "MongoAdmin_files/MongoAdmin.010.png";
+            images[10] = "MongoAdmin_files/MongoAdmin.011.png";
+            images[11] = "MongoAdmin_files/MongoAdmin.012.png";
+            images[12] = "MongoAdmin_files/MongoAdmin.013.png";
+            images[13] = "MongoAdmin_files/MongoAdmin.014.png";
+            images[14] = "MongoAdmin_files/MongoAdmin.015.png";
+            images[15] = "MongoAdmin_files/MongoAdmin.016.png";
+            images[16] = "MongoAdmin_files/MongoAdmin.017.png";
+            images[17] = "MongoAdmin_files/MongoAdmin.018.png";
+            images[18] = "MongoAdmin_files/MongoAdmin.019.png";
+            images[19] = "MongoAdmin_files/MongoAdmin.020.png";
+            images[20] = "MongoAdmin_files/MongoAdmin.021.png";
+            images[21] = "MongoAdmin_files/MongoAdmin.022.png";
+            images[22] = "MongoAdmin_files/MongoAdmin.023.png";
+            images[23] = "MongoAdmin_files/MongoAdmin.024.png";
+            var index = 0;
+            function WindowLoaded(evt)
+            {
+                document.body.onselectstart = function () { return false; };
+            }
+            function Step(i)
+            {
+                GoTo(index + i)
+            }
+            function GoTo(newIndex)
+            {
+                if(newIndex >= 0 && newIndex < images.length)
+                {
+                    index = newIndex;
+                    document.Slideshow.src = images[index];
+                }
+            }
+//      ]]>
+    </script>
+</head>
+<body bgcolor="black" onload='WindowLoaded(event);'>
+    <p align="center">
+        <br/>
+        <br/>
+        <img name="Slideshow" alt="" src="MongoAdmin_files/MongoAdmin.001.png" onclick="Step(1)"/>
+        <br/>
+        <br/>
+        <input type="image" src="MongoAdmin_files/home.png" onclick="GoTo(0)"/>
+        &nbsp;&nbsp;&nbsp;
+        <input type="image" src="MongoAdmin_files/prev.png" onclick="Step(-1)"/>
+        <input type="image" src="MongoAdmin_files/next.png" onclick="Step(1)"/>
+    </p>
+</body>
+</html>
