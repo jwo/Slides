@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>JavaScript for people who didn't earn Javascript</title>
+
+    <meta charset='utf-8'>
+    <script
+      src='http://html5slides.googlecode.com/svn/trunk/slides.js'></script>
+  </head>
+  
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+   
+		.slides.template-default > article:not(.nobackground):not(.biglogo) {
+			background: #fff !important;
+			
+			background-color: white;  
+		} 
+
+		.huge{
+			font-size: 200%;
+			line-height: 200%;
+		}
+		 
+    
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+      
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+        
+        
+
+      <article>
+        <h1>
+					JavaScript for people<br/>who didn't learn JavaScript
+        </h1>
+        <p>
+          Jesse Wolgamott
+          <br>
+          August 12, 2011
+					<br/>
+					<br/>
+					Twitter: @jwo
+					<br/>
+					http://codemav.com/jwo
+        </p>
+      </article>
+
+			<article>
+				<h3>This Talk</h3>
+				<p>Slides available github.com/jwo/slides/JavaScript2011</p>
+				<p class="huge">Tweet questions to me @jwo or use #jslsrc</p>
+			</article>
+
+      <article>
+        <h3>
+          Confession
+        </h3>
+        <p class="build">
+					Hi, I'm JWo, and I thought I knew javascript.
+				</p>
+				<p>
+					I knew jQuery.
+        </p>
+      </article>
+
+      <article class='smaller'>
+        <h3>
+					jQuery is not a language
+        </h3>
+        <p>
+          How much of this is JavaScript? 
+					How much is jQuery specific?
+        </p>
+				<pre>
+&lt;script type='text/javascript'&gt;
+$(".body .items label").live("click", function(event){
+  $.ajax({
+    url: 'http://fiddle.jshell.net/favicon.png',
+    success: function( data ) {
+      event.target.html(data);
+    }
+  });
+});
+&lt;/script&gt;
+				</pre>
+      </article>
+
+      <article>
+        <h3>
+					The Big Overview
+        </h3>
+        <ul>
+					<li>
+						Prototype Inheritance
+					</li>
+          <li>
+					Everything is an Object. Even functions.
+          </li>
+          <li>
+						JavaScript does NOT have classes. It does not keep it classy.
+          </li>
+					<li>
+						Don't use <code>new</code>
+          </li>
+          <li>
+						Scopes, Invocation, and <code>this</code>
+          </li>
+					<li>
+						Learn from CoffeeScript
+          </li>
+
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Prototype Inheritance
+        </h3>
+				<pre>
+bigBrother = Object.create(gameShow);
+bigBrother.expectTheUnexpected();
+				</pre>
+        <ul class="build">
+          <li>
+						Does bigBrother have expectTheUnexpected method?
+          </li>
+          <li>
+						Does gameShow have expectTheUnexpected? (bigBrother's prototype)
+          </li>
+          <li>
+						Keep going until Object.prototype
+          </li>
+					<li>
+						If method not found: you'll get undefined
+        </ul>
+
+        <div class="build">
+          <p>There's only one prototype per object.</p>
+          <p>Like Ruby Modules, no? (if you were limited to 1)</p>
+        </div>
+      </article>
+      <article>
+        <h3>
+          Protoypes are Dynamic
+        </h3>
+				<p>You can update a prototype and will be visible to all.</p>
+
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/fc2ke/embedded/js,result/presentation/"></iframe>
+      </article>
+      
+      <article >
+        <h3>
+     			Calling <code>super</code>
+        </h3>
+
+				<p>JavaScript does not provide a method to call <code>super</code>.</p>
+				<p>But we want to sometimes!</p>
+
+<pre>
+var Note = Backbone.Model.extend({
+  set: function(attributes, options) {
+    Backbone.Model.prototype.set.call(this, attributes, options);
+    ...
+  }
+});
+</pre>
+
+<p>From: Backbone source: <a href="http://documentcloud.github.com/backbone/">http://documentcloud.github.com/backbone/</a>
+       </article>
+      
+      <article>
+        <h3>
+					I hardly new ye … or: Don't use new, ever
+        </h3>
+				<ul class="build">
+					<li>Wait, WHAT?</li>
+					<li>Controversal, an accepted guideline, not a rule</li>
+					<li><code>new</code> hides JavaScript's prototype roots</li>
+					<li>Attaches to a worthless prototype</li>
+					<li><code>Object.create</code> works better</li>
+				</ul>
+			<pre>
+myObj = new function () {
+    this.type = 'core';
+};
+// Better as:
+myObj = {
+    type: 'core'
+};
+			</pre>
+      </article>
+
+      <article>
+        <h3>Invocation</h3>	
+				<p>Functions get declared-parameters, <code>this</code>, and arguments</p>
+				<p><code>this</code> is important! The value is determined by invocation method</p>
+				<ol>
+					<li>Method Invocation</li>
+					<li>Function Invocation</li>
+					<li>Constructor Invocation</li>
+					<li>Apply Invocation</li>
+				</ol>
+			</article>	
+
+      <article>
+        <h3>Method Invocation</h3>	
+				<p>Methods are functions invoked with dot. <code>myObject.iAmAMethod()</code>.</p>
+				<p><code>this</code> is bound to that object</p>
+<pre>
+var guage = {
+	temperature: 0,
+	heat: function(inc){
+		this.temperature += inc;
+	}
+};
+</pre>
+			</article>
+
+      <article>
+        <h3>Functional Invocation</h3>	
+				<p>Public style functions. Example: <code>add(2,3)</code>.</p>
+				<p><code>this</code> is bound to the global object</p>
+<pre>
+address = {city: "Austin"};
+address.move = function (){
+    var addressFinder = function(){
+    alert(this.city);
+    };
+  addressFinder(); // undefined
+};
+address.move();
+</pre>
+			</article>
+
+      <article>
+        <h3>Constructor and Apply Invocation</h3>	
+				<p>Constructor: Functions used with new. Scope is the object created in the constructor.</p>
+				<p>Apply: Can explictly set the value of this. Somewhat like "send" in ruby</p>
+			</article>
+
+      <article>
+        <h3>Scope</h3>	
+				<p>Block syntax is good</p>
+				<p>Sadly, JavaScript does not have block syntax.</p>
+				<p>So:....</p>
+				<ul>
+					<li>Declare all variabes at the top of your functions</li>
+					<li>Variables declared in a function are not visible outside the function<li>
+					<li>Best practice to have everything inside a function</li>
+				<ul>
+			</article>
+
+      <article>
+        <h3>CoffeeScript is Smart(er than you)</h3>	
+				<p>CS writes code the way you should write JavaScript.</p>
+
+<pre>
+(function() {
+  var append, studio;
+  studio = 5;
+  append = function(number) {
+    return number + 1;
+  };
+  if (studio === 5) {
+    append(studio);
+  }
+}).call(this);
+</pre>
+			</article>
+      
+      <article>
+        <h2>
+          Tidbits
+        </h2>
+      </article>
+
+      <article>
+        <h3>Proper Bracket Usage
+        </h3>
+				<p>Also known as use semicolons everywhere</p>
+
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/ZdmT7/5/embedded/js,result/presentation/"></iframe>
+
+      </article>
+
+
+      <article>
+        <h3>Variables Passed by Reference
+        </h3>
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/x4b65/embedded/js,result/presentation/"></iframe>
+      </article>
+
+      <article>
+        <h3>Equality
+        </h3>
+				<p><code>==</code> and <code>!=</code> are evil and should die</p>
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/QC5EU/embedded/js,result/presentation/"></iframe>
+      </article>
+
+      <article>
+        <h3>
+          Takeaways
+        </h3>
+				<ol class="build">
+					<li>Prototype Inheritance</li>
+					<li>Don't use <code>new</code></li>
+					<li>CoffeeScript is smarter than you are</li>
+				</ol>
+      </article>
+    </section>
+
+  </body>
+</html>
+
