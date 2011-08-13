@@ -60,49 +60,60 @@
 					<br/>
 					Twitter: @jwo
 					<br/>
-					http://codemav.com/jwo
+					codemav.com/jwo
         </p>
       </article>
 
 			<article>
 				<h3>This Talk</h3>
 				<p>Slides available github.com/jwo/slides/JavaScript2011</p>
-				<p class="huge">Tweet questions to me @jwo or use #jslsrc</p>
+				<p>Tweet questions to me</p>
+				<p class="huge">@jwo<br/>or<br/>#jslsrc</p>
+			</article>
+
+			<article class="segue">
+				<h2>Personal Story to introduce relatability</h2>
 			</article>
 
       <article>
         <h3>
           Confession
         </h3>
-        <p class="build">
-					Hi, I'm JWo, and I thought I knew javascript.
-				</p>
-				<p>
-					I knew jQuery.
-        </p>
+				<div class="build">
+					<p>
+						Hi, I'm JWo, and I thought I knew javascript.
+					</p>
+					<p>
+						I knew jQuery.
+					</p>
+				</div>
       </article>
 
-      <article class='smaller'>
+      <article >
         <h3>
 					jQuery is not a language
         </h3>
-        <p>
-          How much of this is JavaScript? 
-					How much is jQuery specific?
-        </p>
-				<pre>
-&lt;script type='text/javascript'&gt;
+				<div class="build">
+					<p>
+						How much of this is JavaScript? 
+						How much is jQuery specific?
+					</p>
+<pre>
 $(".body .items label").live("click", function(event){
   $.ajax({
-    url: 'http://fiddle.jshell.net/favicon.png',
+    url: '/supercool/54',
     success: function( data ) {
       event.target.html(data);
     }
   });
 });
-&lt;/script&gt;
-				</pre>
+</pre>
+				</div>
       </article>
+
+			<article class="segue">
+				<h2>Let's Get Started</h2>
+			</article>
 
       <article>
         <h3>
@@ -113,13 +124,13 @@ $(".body .items label").live("click", function(event){
 						Prototype Inheritance
 					</li>
           <li>
-					Everything is an Object. Even functions.
+						Everything is an Object. Even functions.
           </li>
           <li>
-						JavaScript does NOT have classes. It does not keep it classy.
+						JavaScript does not have classes. It does not keep it classy.
           </li>
 					<li>
-						Don't use <code>new</code>
+						Use <code>new</code>? Don't use <code>new</code>?
           </li>
           <li>
 						Scopes, Invocation, and <code>this</code>
@@ -154,17 +165,23 @@ bigBrother.expectTheUnexpected();
         </ul>
 
         <div class="build">
-          <p>There's only one prototype per object.</p>
-          <p>Like Ruby Modules, no? (if you were limited to 1)</p>
+          <p>There's only one prototype per function.</p>
+          <p class="build"><span>Like Ruby Modules, no?</span>  <span>(if you were limited to 1)</span></p>
         </div>
       </article>
+
+			<article>
+				<h3>Everything is a funtion</h3>
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/akMZx/1/embedded/js,result/presentation/"></iframe>
+			</article>
+
       <article>
         <h3>
           Protoypes are Dynamic
         </h3>
 				<p>You can update a prototype and will be visible to all.</p>
 
-				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/fc2ke/embedded/js,result/presentation/"></iframe>
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/fc2ke/1/embedded/js,result/presentation/"></iframe>
       </article>
       
       <article >
@@ -176,6 +193,7 @@ bigBrother.expectTheUnexpected();
 				<p>But we want to sometimes!</p>
 
 <pre>
+// To override set (and call super's set)
 var Note = Backbone.Model.extend({
   set: function(attributes, options) {
     Backbone.Model.prototype.set.call(this, attributes, options);
@@ -189,14 +207,14 @@ var Note = Backbone.Model.extend({
       
       <article>
         <h3>
-					I hardly new ye … or: Don't use new, ever
+					I hardly new ye … or: Don't use new, ever*
         </h3>
 				<ul class="build">
+					<li>* Except when you know WHY you want <code>new</code></li>
 					<li>Wait, WHAT?</li>
-					<li>Controversal, an accepted guideline, not a rule</li>
+					<li>Controversal, a guideline, not a rule</li>
 					<li><code>new</code> hides JavaScript's prototype roots</li>
-					<li>Attaches to a worthless prototype</li>
-					<li><code>Object.create</code> works better</li>
+					<li><code>Object.create</code> is useful too</li>
 				</ul>
 			<pre>
 myObj = new function () {
@@ -208,6 +226,16 @@ myObj = {
 };
 			</pre>
       </article>
+
+			<article>
+				<h3>My <code>new</code> Recommendation</h3>
+				<ul class="build">
+					<li><span class="red">DON'T</span> write <code>new Array()</code></li>
+					<li><span class="red">DON'T</span> write <code>new Function()</code></li>
+					<li><span class="green">DO</span> object literals when you can <code>var myArray = [a,b,c,d];</code></li>
+					<li><span class="green">DO</span> new YourApp.YourFancyClass() if you REALLY know what you're doing with prototypes</li>
+				</ul>
+			</article>
 
       <article>
         <h3>Invocation</h3>	
@@ -221,6 +249,13 @@ myObj = {
 				</ol>
 			</article>	
 
+			<article>
+				<h3>An example of Failure</h3>
+
+				<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/jwolgamott/RZjHE/embedded/js,result/presentation/"></iframe>
+
+			</article>
+
       <article>
         <h3>Method Invocation</h3>	
 				<p>Methods are functions invoked with dot. <code>myObject.iAmAMethod()</code>.</p>
@@ -229,7 +264,7 @@ myObj = {
 var guage = {
 	temperature: 0,
 	heat: function(inc){
-		this.temperature += inc;
+	  this.temperature += inc;
 	}
 };
 </pre>
@@ -243,7 +278,7 @@ var guage = {
 address = {city: "Austin"};
 address.move = function (){
     var addressFinder = function(){
-    alert(this.city);
+			alert(this.city);
     };
   addressFinder(); // undefined
 };
@@ -252,21 +287,48 @@ address.move();
 			</article>
 
       <article>
-        <h3>Constructor and Apply Invocation</h3>	
+        <h3>Constructor Invocation</h3>	
 				<p>Constructor: Functions used with new. Scope is the object created in the constructor.</p>
+<pre>
+var Session = function(name){
+    this.sessionName = name;
+};
+Session.prototype.get_name = function(){
+    return this.sessionName;
+};
+session = new Session("JavaScript for Winners");
+alert(session.get_name());
+</pre>
+				</article>
+				<article>
+				<h3>Apply Invocation</h3>
 				<p>Apply: Can explictly set the value of this. Somewhat like "send" in ruby</p>
+<pre>
+var Session = function(name){
+    this.sessionName = name;
+};
+Session.prototype.get_name = function(){
+    return this.sessionName;
+};
+var sessionObject = {
+		sessionName: "#winning"
+};
+var session_name = Session.prototype.get_name.apply(sessionObject);
+</pre>
 			</article>
 
       <article>
         <h3>Scope</h3>	
-				<p>Block syntax is good</p>
-				<p>Sadly, JavaScript does not have block syntax.</p>
-				<p>So:....</p>
-				<ul>
-					<li>Declare all variabes at the top of your functions</li>
-					<li>Variables declared in a function are not visible outside the function<li>
-					<li>Best practice to have everything inside a function</li>
-				<ul>
+				<div class="build">
+					<p>Block syntax is good</p>
+					<p>Sadly, JavaScript does not have block syntax.</p>
+					<p>So:....</p>
+					<ul>
+						<li>Declare all variabes at the top of your functions</li>
+						<li>Variables declared in a function are not visible outside the function<li>
+						<li>Best practice to have everything inside a function</li>
+					<ul>
+				</div>
 			</article>
 
       <article>
@@ -322,10 +384,32 @@ address.move();
         </h3>
 				<ol class="build">
 					<li>Prototype Inheritance</li>
-					<li>Don't use <code>new</code></li>
+					<li>Use object literals instead of new Function and new Array</li>
 					<li>CoffeeScript is smarter than you are</li>
 				</ol>
       </article>
+			<article>
+				<h3>Where to go from Here</h3>
+				<ul>
+					<li>
+						<img src="http://ecx.images-amazon.com/images/I/41EMBPmjJLL._BO2,204,203,200_PIsitb-sticker-arrow-click,TopRight,35,-76_AA300_SH20_OU01_.jpg" align="left"/>
+						JavaScript: The Good Parts. Douglas Crockard. Amazon
+					</li>
+					<li>
+						JavaScript Yahoo! Theater (again by Douglas Crockar).
+					</li>
+					<li>Read/write some Node or Backbone</li>
+				</ul>
+			</article>
+			<article>
+				<h3>Props</h3>
+				<ul>
+					<li>Slides (HTML5): <a href="http://code.google.com/p/html5slides/">http://code.google.com/p/html5slides/</a></li>
+					<li>JS Fiddle (javascript embedded runtime / collaboration): <a href="http://jsfiddle.net">http://jsfiddle.net</a></li>
+				</ul>
+
+				<p class="huge">Rate Me: <a href="http://spkr8.com/t/7821">http://spkr8.com/t/7821</a></p>
+			</article>
     </section>
 
   </body>
